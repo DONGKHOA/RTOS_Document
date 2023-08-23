@@ -46,9 +46,9 @@
 **Feature**:
 
 -   Tạo một `Event Group` mới.
--   Để sử dụng được chức năng này thì RTOS API phải có: **configSUPPORT_DYNAMIC_ALLOCATION** phải được set là 1 trong `FreeRTOSConfig.h` (hoặc không cần quan tâm mặc định nó sẽ là 1) :).
+-   Để sử dụng được chức năng này thì RTOS API phải có: **configSUPPORT_DYNAMIC_ALLOCATION** phải được set là 1 trong `FreeRTOSConfig.h` (hoặc không cần quan tâm mặc định nó sẽ là 1).
 -   Một `Event Group` được yêu cầu với lượng RAM rất nhỏ để sử dụng. Được phân bổ một cách tự động nếu sử dụng hàm `xEventGroupCreate()` và được có thể tùy biến được nếu sử dụng hàm `xEventGroupCreateStatic()`.
--   Số bit (hoặc cờ) trong một `Event Group` có thể cấu hình (xem lại phần trên) :).
+-   Số bit (hoặc cờ) trong một `Event Group` có thể cấu hình (xem lại phần trên).
 -   Nếu một `Event Group` được tạo thành công thì một `handle` cho `Event Group` được trả về. Nếu không đủ vùng nhớ để tạo một `Event Group` thì giá trị trả về là `NULL`.
 
 **Example**:
@@ -90,28 +90,26 @@
 
 **Parameters**:
 
--   `xEventGroup`: The event group in which the bits are being tested. The event group must have previously been created using a call to xEventGroupCreate().
--   `uxBitsToWaitFor`: A bitwise value that indicates the bit or bits to test inside the event group. For example, to wait for bit 0 and/or bit 2 set `uxBitsToWaitFor` to 0x05. To wait for bits 0 and/or bit 1 and/or bit 2 set `uxBitsToWaitFor` to 0x07. Etc.
-    `uxBitsToWaitFor` must not be set to 0.
+-   `xEventGroup`: **Event Group** có các bit đang được kiểm tra. **Event Group** phải được tạo bằng cách sử dụng hàm `xEventGroupCreate()`.
+-   `uxBitsToWaitFor`: Các giá trị theo bit cho biết bit hoặc các biết bit cần kiểm tra bên trong **Event Group**. Ví dụ, để đợi **bit 0 and / or bit 2** thì đặt `uxBitsToWaitFor` là **0x05**.
 
 -   `xClearOnExit`:
 
-    -   If `xClearOnExit` is set to **pdTRUE** then any bits set in the value passed as the `uxBitsToWaitFor` parameter will be cleared in the event group before `xEventGroupWaitBits()` returns if `xEventGroupWaitBits()` returns for any reason other than a timeout. The timeout value is set by the xTicksToWait parameter.
-    -   If `xClearOnExit` is set to **pdFALSE** then the bits set in the event group are not altered when the call to `xEventGroupWaitBits()` returns.
+    -   Nếu `xClearOnExit` được đặt thành **pdTRUE** thì mọi bit được đặt trong giá trị được truyền dưới dạng tham số `uxBitsToWaitFor` sẽ bị xóa trong Event Group khi `xEventGroupWaitBits()` trả về trong khoảng thời gian chờ. Giá trị thời gian chờ được đặt trong `xTicksToWait`.
+    -   Nếu `xClearOnExit` được đặt thành **pdFALSE** thì các bit ở trong Event Group sẽ không bị thay đổi khi gọi hàm và khi hàm `xEventGroupWaitBits()` trả về.
 
--   `xWaitForAllBits`:
+-   `xWaitForAllBits`: Được sử dụng để tạo phép thử **AND** logic (trong đó tất cả các bit phải được đặt) hoặc phép thử **OR** logic (trong đó phải đặt một hoặc nhiều bit) như sau:
 
-    -   `xWaitForAllBits` is used to create either a logical AND test (where all bits must be set) or a logical OR test (where one or more bits must be set) as follows:
-    -   If `xWaitForAllBits` is set to **pdTRUE** then `xEventGroupWaitBits()` will return when either all the bits set in the value passed as the `uxBitsToWaitFor` parameter are set in the event group or the specified block time expires.
+    -   Nếu `xWaitForAllBits` được đặt thành **pdTRUE** thì `xEventGroupWaitBits()` sẽ trả về khi tất cả các được đặt trong giá trị được truyền dưới dạng tham số `uxBitsToWaitFor` được đặt trong **Event Group** hoặc hết thời gian được chỉ định. Có thể hiểu đơn giản đây là phép **AND**.
 
-    -   If `xWaitForAllBits` is set to **pdFALSE** then `xEventGroupWaitBits()` will return when any of the bits set in the value passed as the `uxBitsToWaitFor` parameter are set in the event group or the specified block time expires.
+    -   Nếu `xWaitForAllBits` được đặt thành **pdFALSE** thì `xEventGroupWaitBits()` sẽ trả về khi bất kì bit nào được đạt trong giá trị được truyền dưới dạng tham số `uxBitsToWaitFor` được đặt trong **Event Group** hoặc hết thời gian được chỉ định. Có thể hiểu đơn giản đây là phép **OR**.
 
--   `xTicksToWait`: The maximum amount of time (specified in 'ticks') to wait for one/all (depending on the `xWaitForAllBits` value) of the bits specified by `uxBitsToWaitFor` to become set.
+-   `xTicksToWait`: Khoảng thời gian tối đa (được tính theo `Ticks`) để chờ một hoặc tất cả (tùy thuộc vào giá trị `xWaitForAllBits`) của các bit mà `uxBitsToWaitFor` thiết lập.
 
 **Returns**:
 
--   The value of the event group at the time either the event bits being waited for became set, or the block time expired. The current value of the event bits in an event group will be different to the returned value if a higher priority task or interrupt changed the value of an event bit between the calling task leaving the Blocked state and exiting the `xEventGroupWaitBits()` function.
--   Test the return value to know which bits were set. If `xEventGroupWaitBits()` returned because its timeout expired then not all the bits being waited for will be set. If `xEventGroupWaitBits()` returned because the bits it was waiting for were set then the returned value is the event group value before any bits were automatically cleared because the xClearOnExit parameter was set to **pdTRUE**.
+-   Giá trị của Event Group tại thời điểm các Event Bit đang được chờ đợi đã được đặt hoặc thời gian chờ hết. Giá trị hiện tại cảu các Event Bit trong Event Group sẽ khác với giá trị được về nếu task hoặc ngắt có mức ưu tiên cao hơn thay đổi gái trị của Event Bit giữa task rời khỏi trạng thái Block và thoát khỏi hàm`xEventGroupWaitBits()`.
+-   Kiếm tra gí trị trả về để biết bit nào đã được đặt. Nếu `xEventGroupWaitBits()` được trả về do hết thời gian chờ thì không phải tất cả các bit đang chờ sẽ được đặt. Nếu `xEventGroupWaitBits()` được trả về vì các bit mà nó đang chờ đã được đạt thì giá trị được trả về là giá trị của Event Group trược khi bất kỳ bit nào được tự động xóa vì tham số `xClearOnExit` được đặt thành **pdTRUE**.
 
 **Example**:
 
@@ -160,5 +158,64 @@ const TickType_t xTicksToWait = 100 / portTICK_PERIOD_MS;
                                  const EventBits_t uxBitsToSet );
 ```
 
+**Feature**
+
+**Paramenter**
+
+-   `xEventGroup`: Event Group trong đó các sẽ được thiết lập . Event Group phải được tạo bằng cách sử dụng hàm `xEventGroupCreate()`.
+-   `uxBitsToSet`: Giá trị theo bit cho biết bit hoặc các bit cần thiết lập trong **Event Group**. Ví dụ, thiết lập `uxBitsToSet` là **0x08** thì chỉ có bit 3 được thiết lập. Thiết lập `uxBitsToSet` là **0x09** thì thiết lập cả bit 3 và bit 0.
+
+**Return**
+
+-   Giá trị của Event Group tại thời điểm hàm được gọi và trả về `xEventGroupSetBits()`.
+-   Có hai lý do khiến giá trị trả về có thể vị xóa các bit do tham số `uxBitsToSet` chỉ định:
+
+    -   Nếu việc thiết lập một bit dẫn đến một **task** thoát khỏi trạng thái **Block** thì có thể bit đó đã bị xóa tự động (xem tham số `xClearBitOnExit` của `xEventGroupWaitBits()`).
+    -   Bất kỳ **task** nào được chuyển thành trạng thái Ready có mức độ ưu tiên cao hơn **task** được gọi hàm `xEventGroupSetBits()` sẽ thực thi và có thể làm thay đổi giá trị của Event Group trước khi hàm `xEventGroupSetBits()` gọi và trả về.
+
+**Example**
+
+```C
+#define BIT_0	( 1 << 0 )
+#define BIT_4	( 1 << 4 )
+
+void aFunction( EventGroupHandle_t xEventGroup )
+{
+EventBits_t uxBits;
+
+  /* Set bit 0 and bit 4 in xEventGroup. */
+  uxBits = xEventGroupSetBits(
+                              xEventGroup,    /* The event group being updated. */
+                              BIT_0 | BIT_4 );/* The bits being set. */
+
+  if( ( uxBits & ( BIT_0 | BIT_4 ) ) == ( BIT_0 | BIT_4 ) )
+  {
+      /* Both bit 0 and bit 4 remained set when the function returned. */
+  }
+  else if( ( uxBits & BIT_0 ) != 0 )
+  {
+      /* Bit 0 remained set when the function returned, but bit 4 was
+      cleared.  It might be that bit 4 was cleared automatically as a
+      task that was waiting for bit 4 was removed from the Blocked
+      state. */
+  }
+  else if( ( uxBits & BIT_4 ) != 0 )
+  {
+      /* Bit 4 remained set when the function returned, but bit 0 was
+      cleared.  It might be that bit 0 was cleared automatically as a
+      task that was waiting for bit 0 was removed from the Blocked
+      state. */
+  }
+  else
+  {
+      /* Neither bit 0 nor bit 4 remained set.  It might be that a task
+      was waiting for both of the bits to be set, and the bits were cleared
+      as the task left the Blocked state. */
+  }
+}
+
+```
+
 ## Tham Khảo
+
 > [freeRTOS - EventGroup](https://www.freertos.org/event-groups-API.html)
