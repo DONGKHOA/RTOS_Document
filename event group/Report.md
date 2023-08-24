@@ -108,8 +108,7 @@
 
 **Returns**:
 
--   Giá trị của Event Group tại thời điểm các Event Bit đang được chờ đợi đã được đặt hoặc thời gian chờ hết. Giá trị hiện tại cảu các Event Bit trong Event Group sẽ khác với giá trị được về nếu task hoặc ngắt có mức ưu tiên cao hơn thay đổi gái trị của Event Bit giữa task rời khỏi trạng thái Block và thoát khỏi hàm`xEventGroupWaitBits()`.
--   Kiếm tra gí trị trả về để biết bit nào đã được đặt. Nếu `xEventGroupWaitBits()` được trả về do hết thời gian chờ thì không phải tất cả các bit đang chờ sẽ được đặt. Nếu `xEventGroupWaitBits()` được trả về vì các bit mà nó đang chờ đã được đạt thì giá trị được trả về là giá trị của Event Group trược khi bất kỳ bit nào được tự động xóa vì tham số `xClearOnExit` được đặt thành **pdTRUE**.
+-   Kiếm tra giá trị trả về để biết bit nào đã được đặt. Nếu `xEventGroupWaitBits()` được trả về do hết thời gian chờ thì không phải tất cả các bit đang chờ sẽ được đặt. Nếu `xEventGroupWaitBits()` được trả về vì các bit mà nó đang chờ đã được đạt thì giá trị được trả về là giá trị của Event Group trược khi bất kỳ bit nào được tự động xóa vì tham số `xClearOnExit` được đặt thành **pdTRUE**.
 
 **Example**:
 
@@ -218,4 +217,4 @@ EventBits_t uxBits;
 
 ## Tham Khảo
 
-> [freeRTOS - EventGroup](https://www.freertos.org/event-groups-API.html)1111
+> [freeRTOS - EventGroup](https://www.freertos.org/event-groups-API.html)
