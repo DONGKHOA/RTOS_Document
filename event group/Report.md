@@ -218,4 +218,4 @@ EventBits_t uxBits;
 
 ## Tham Khảo
 
-> [freeRTOS - EventGroup](https://www.freertos.org/event-groups-API.html)
+> [freeRTOS - EventGroup](https://www.freertos.org/event-groups-API.html)1111
